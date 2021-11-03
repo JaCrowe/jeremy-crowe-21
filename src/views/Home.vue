@@ -129,11 +129,12 @@ export default defineComponent({
         camera.position.z = 1;
         scene = new THREE.Scene();
         geometry = new THREE.PlaneBufferGeometry(0.2, 0.2, 1);
-        material = new THREE.ShaderMaterial({
-          uniforms,
-          vertexShader: this.plainVertex,
-          fragmentShader: this.swirlyFragment,
-        });
+        // material = new THREE.ShaderMaterial({
+        //   uniforms,
+        //   vertexShader: this.plainVertex,
+        //   fragmentShader: this.swirlyFragment,
+        // });
+        material = new THREE.MeshBasicMaterial({});
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
         renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -144,8 +145,9 @@ export default defineComponent({
         );
       };
       function animation(time: number) {
-        mesh.rotation.x = time / 2000;
-        mesh.rotation.y = time / 1000;
+        // mesh.rotation.x = time / 2000;
+        // mesh.rotation.y = time / 1000;
+        mesh.rotation.z = time / 1000;
         uniforms.time.value += 0.01;
 
         renderer.render(scene, camera);
