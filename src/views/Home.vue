@@ -18,7 +18,7 @@ export default defineComponent({
 
             vUv = uv;
 
-            gl_Position = vec4( position, 1.0 );
+            gl_Position =  projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 
           }
         `,
@@ -129,12 +129,12 @@ export default defineComponent({
         camera.position.z = 1;
         scene = new THREE.Scene();
         geometry = new THREE.PlaneBufferGeometry(0.2, 0.2, 1);
-        // material = new THREE.ShaderMaterial({
-        //   uniforms,
-        //   vertexShader: this.plainVertex,
-        //   fragmentShader: this.swirlyFragment,
-        // });
-        material = new THREE.MeshBasicMaterial({});
+        material = new THREE.ShaderMaterial({
+          uniforms,
+          vertexShader: this.plainVertex,
+          fragmentShader: this.swirlyFragment,
+        });
+        // material = new THREE.MeshBasicMaterial({});
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
         renderer = new THREE.WebGLRenderer({ antialias: true });
