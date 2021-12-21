@@ -6,6 +6,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import * as THREE from "three";
+import noodle from "../glsl/noodle.glsl";
 
 type MaterialUniform = { time: { value: number } };
 type ParticleFrameData = {
@@ -183,9 +184,11 @@ export default defineComponent({
         for (let i = 0; i < N_PLANES; i++) {
           const uniforms: MaterialUniform = { time: { value: Math.random() } };
 
+          console.log(`WE GOT ${noodle}\n\n\n`);
+
           material = new THREE.ShaderMaterial({
             uniforms,
-            vertexShader: this.trippyVertex,
+            vertexShader: noodle,
             fragmentShader: this.cheapFragment,
             side: THREE.DoubleSide,
           });
