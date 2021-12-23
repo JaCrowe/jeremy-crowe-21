@@ -2,15 +2,16 @@
   <div ref="container" class="container" />
   <div class="content">
     <h1>Jeremy Crowe</h1>
-    <p>
-      "Jeremy says sentances that no one has ever said before" - My favorite
-      quote about me right now
-    </p>
+    <div class="socialLinks">
+      <SocialLinks />
+    </div>
+    <p>Curious guy</p>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import SocialLinks from "../components/SocialLinks.vue";
 import * as THREE from "three";
 import orthoVert from "../glsl/ortho.vert";
 import planeSphereVert from "../glsl/plane_sphere.vert";
@@ -30,6 +31,9 @@ type ParticleFrameData = {
 
 export default defineComponent({
   name: "Home",
+  components: {
+    SocialLinks,
+  },
   methods: {
     setupOrthoShaderScene() {
       let camera: THREE.Camera,
@@ -121,7 +125,7 @@ export default defineComponent({
           });
 
           mesh = new THREE.Mesh(geometry, material);
-          mesh.position.y = upsidedown ? 0.07 : -0.01;
+          mesh.position.y = upsidedown ? 0.07 : -0.07;
 
           mesh.rotation.x = upsidedown ? -90.0 : 90.0;
 
@@ -139,15 +143,12 @@ export default defineComponent({
             uniforms,
             vertexShader: planeSphereVert,
             fragmentShader: stripeyIdiotFrag,
-            // fragmentShader: this.swirlyFragment,
             side: THREE.DoubleSide,
           });
 
           mesh = new THREE.Mesh(geometry, material);
-          mesh.position.y = 0.03;
+          // mesh.position.y = 0.03;
 
-          // mesh.rotation.z = 2.0;
-          // mesh.rotation.y = 180.0;
           scene.add(mesh);
           meshes.push({
             mesh,
@@ -156,12 +157,19 @@ export default defineComponent({
           });
         };
 
-        makeWaveyThing();
+        // makeWaveyThing();
         makeplaneSphere();
-        // makeWaveyThing(true);
+
+        const onWindowResize = () => {
+          renderer.setSize(window.innerWidth, window.innerHeight);
+          renderer.setPixelRatio(window.innerHeight / window.innerWidth);
+        };
 
         renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        onWindowResize();
+        window.addEventListener("resize", onWindowResize);
+
         renderer.setAnimationLoop(animation);
         (this.$refs.container as HTMLDivElement).appendChild(
           renderer.domElement
@@ -173,8 +181,8 @@ export default defineComponent({
           uniforms.time.value += 0.01;
         });
 
-        meshes[0].mesh.rotation.z -= 0.0025;
-        meshes[1].mesh.rotation.y -= 0.0025;
+        // meshes[0].mesh.rotation.z -= 0.0025;
+        meshes[0].mesh.rotation.y -= 0.0025;
 
         renderer.render(scene, camera);
       }
@@ -188,7 +196,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .container {
   width: 100vw;
   height: 100vh;

@@ -23,10 +23,16 @@ void main()	{
     cos(phi)
   );
 
-  float alpha = (1.0 - cos(time))/2.;
+  float alpha = (1.0 - min(
+    1.,
+    max(
+      -1., 
+      -10.0*cos(time/5.0)
+    )
+  ))/2.;
 
   vec3 real_coords = alpha*sphere_coords 
-    + (1.0 - alpha)*position*(0.5 + 0.5*alpha);
+    + (0.7 - 0.7*alpha)*position;
 
   vNormal = vec3(
     0.,
