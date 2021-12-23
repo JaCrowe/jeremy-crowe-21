@@ -1,8 +1,8 @@
 module.exports = {
   chainWebpack: (config) => {
     config.module
-      .rule("glsl")
-      .test(/\.glsl$/)
+      .rule("shaders")
+      .test(/\.(vert|frag)$/)
       .use("raw-loader")
       .loader("raw-loader")
       .end();

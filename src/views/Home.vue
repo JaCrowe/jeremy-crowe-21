@@ -1,12 +1,20 @@
 <template>
   <div ref="container" class="container" />
-  <div class="content"><h1>Jeremy Crowe</h1></div>
+  <div class="content">
+    <h1>Jeremy Crowe</h1>
+    <p>
+      "Jeremy says sentances that no one has ever said before" - My favorite
+      quote about me right now
+    </p>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import * as THREE from "three";
-import noodle from "../glsl/noodle.glsl";
+import planeSphereVert from "../glsl/plane_sphere.vert";
+import planeSphereAlmostVert from "../glsl/plane_sphere_almost.vert";
+import radialWave from "../glsl/radial_wave.vert";
 
 type MaterialUniform = { time: { value: number } };
 type ParticleFrameData = {
@@ -19,51 +27,22 @@ export default defineComponent({
   name: "Home",
   data() {
     return {
-      objectVertex: `
-          varying vec2 vUv;
-          uniform float time;
-          void main()	{
-            vUv = uv;
-            gl_Position =  projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-          }
-        `,
-      trippyVertex: `
-          varying vec2 vUv;
-          uniform float time;
-          void main()	{
-            vUv = uv;
-            vec3 dP = vec3(position.x, 6.0*position.y, position.z);
-            float theta = atan(position.y, position.x);
-            vec3 dR = vec3(
-              position.x*(sin(theta) + cos(theta)), 
-              position.x*(sin(theta) + cos(theta)), 
-              position.z);
-            gl_Position =  projectionMatrix * modelViewMatrix * vec4( dP, 1.0 );
-          }
-        `,
-      fuckyObjectVertex: `
-          varying vec2 vUv;
-          uniform float time;
-          void main()	{
-            vUv = uv;
-            vec3 newPosition = vec3(position.x, position.y, position.z + sin(time + vUv.x));
-            gl_Position =  projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
-          }
-        `,
-      worldVertex: `
-          varying vec2 vUv;
-          uniform float time;
-
-          void main()	{
-            vUv = uv;
-            gl_Position =  position;
-          }
-        `,
-      cheapFragment: `
-        void main(){
-          gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-        }
-      `,
+      radialWave: `
+uniform float time;
+varying vec2 vUv;
+varying vec3 vNormal;
+void main(){
+ gl_FragColor = vec4(vec3(100.0*vNormal.z), 1.0);
+}
+`,
+      sphere: `
+uniform float time;
+varying vec2 vUv;
+varying vec3 vNormal;
+void main(){
+ gl_FragColor = vec4(vec3(vNormal.z), 1.0);
+}
+`,
       swirlyFragment: `
           varying vec2 vUv;
 
@@ -101,7 +80,7 @@ export default defineComponent({
     };
   },
   methods: {
-    setupShaderScene() {
+    setupOrthoShaderScene() {
       let camera: THREE.Camera,
         scene: THREE.Scene,
         renderer: THREE.WebGLRenderer;
@@ -120,9 +99,9 @@ export default defineComponent({
           -girth / aspect,
           girth / aspect,
           0.01,
-          10
+          70
         );
-        camera.position.z = 1;
+        camera.position.z = 0.5;
 
         scene = new THREE.Scene();
 
@@ -135,7 +114,7 @@ export default defineComponent({
 
         material = new THREE.ShaderMaterial({
           uniforms,
-          vertexShader: this.objectVertex,
+          vertexShader: planeSphereVert,
           fragmentShader: this.swirlyFragment,
         });
 
@@ -153,12 +132,13 @@ export default defineComponent({
 
       function animation(time: number) {
         uniforms.time.value += 0.01;
+        mesh.rotation.y += 0.8;
         renderer.render(scene, camera);
       }
 
       init();
     },
-    setupNormalSceneLol() {
+    setupPerspectiveScene() {
       let camera: THREE.Camera,
         scene: THREE.Scene,
         renderer: THREE.WebGLRenderer;
@@ -175,43 +155,63 @@ export default defineComponent({
           0.01,
           10
         );
-        camera.position.z = 1;
+        camera.position.z = 0.12;
+        camera.position.x = -0.0125;
         scene = new THREE.Scene();
         geometry = new THREE.PlaneBufferGeometry(0.1, 0.1, 256, 256);
 
-        const N_PLANES = 1;
-
-        for (let i = 0; i < N_PLANES; i++) {
+        const makeWaveyThing = () => {
           const uniforms: MaterialUniform = { time: { value: Math.random() } };
-
-          console.log(`WE GOT ${noodle}\n\n\n`);
 
           material = new THREE.ShaderMaterial({
             uniforms,
-            vertexShader: noodle,
-            fragmentShader: this.cheapFragment,
+            vertexShader: radialWave,
+            fragmentShader: this.radialWave,
             side: THREE.DoubleSide,
           });
 
           mesh = new THREE.Mesh(geometry, material);
-          // mesh.position.x = 1.3 * (1 - 2 * Math.random());
-          // mesh.position.y = 0.6 * (1 - 2 * Math.random());
-          mesh.position.z = 0;
+          mesh.position.y = -0.01;
 
-          mesh.rotation.x = 2.0;
-          mesh.rotation.z = 2.0;
-          // mesh.rotation.x = 2 * Math.PI * Math.random();
-          // mesh.rotation.z = 2 * Math.PI * Math.random();
-          // mesh.rotation.y = 2 * Math.PI * Math.random();
+          mesh.rotation.x = 90.0;
+
           scene.add(mesh);
           planes.push({
             mesh,
             uniforms,
             velocity: { x: Math.random(), y: Math.random(), z: Math.random() },
           });
-        }
+        };
+        const makeplaneSphere = () => {
+          const uniforms: MaterialUniform = { time: { value: Math.random() } };
 
-        renderer = new THREE.WebGLRenderer({ antialias: true });
+          material = new THREE.ShaderMaterial({
+            uniforms,
+            // vertexShader: planeSphereVert,
+            vertexShader: planeSphereAlmostVert,
+            fragmentShader: this.sphere,
+            side: THREE.DoubleSide,
+          });
+
+          mesh = new THREE.Mesh(geometry, material);
+          mesh.position.x = -0.08;
+          mesh.position.y = 0.02;
+          mesh.position.z = 0;
+
+          // mesh.rotation.z = 2.0;
+          mesh.rotation.y = 180.0;
+          scene.add(mesh);
+          planes.push({
+            mesh,
+            uniforms,
+            velocity: { x: Math.random(), y: Math.random(), z: Math.random() },
+          });
+        };
+
+        makeWaveyThing();
+        makeplaneSphere();
+
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setAnimationLoop(animation);
         (this.$refs.container as HTMLDivElement).appendChild(
@@ -221,17 +221,11 @@ export default defineComponent({
       function animation(time: number) {
         planes.forEach((plane) => {
           const { uniforms, mesh, velocity } = plane;
-          const { rotation, position } = mesh;
-
+          // const { rotation, position } = mesh;
           uniforms.time.value += 0.01;
-          // rotation.x += 0.01;
-          // rotation.y += 0.01;
-          // position.y -= 0.001 + 0.001 * velocity.y;
-          // if (position.y < -0.6) {
-          //   position.y += 1.2;
-          //   position.x = 2.8 * (0.5 - Math.random());
-          // }
         });
+
+        planes[1].mesh.rotation.z += 0.0025;
 
         renderer.render(scene, camera);
       }
@@ -239,7 +233,8 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.setupNormalSceneLol();
+    // this.setupOrthoShaderScene();
+    this.setupPerspectiveScene();
   },
 });
 </script>
@@ -254,11 +249,13 @@ export default defineComponent({
   margin: 0;
   padding: 0;
   z-index: 1;
+  background-color: black;
 }
 .content {
   position: relative;
   z-index: 2;
-  h1 {
+  h1,
+  p {
     color: white;
   }
 }
