@@ -43,6 +43,23 @@ void main(){
  gl_FragColor = vec4(vec3(vNormal.z), 1.0);
 }
 `,
+      stripeyIdiot: `
+uniform float time;
+varying vec2 vUv;
+varying vec3 vNormal;
+void main(){
+  gl_FragColor = vec4(
+    vec3(
+      smoothstep(
+        0.6,
+        0.5,
+        sin(vNormal.z*100.0)
+      ) - vNormal.z
+    ),
+    1.0
+  );
+}
+`,
       swirlyFragment: `
           varying vec2 vUv;
 
@@ -187,9 +204,9 @@ void main(){
 
           material = new THREE.ShaderMaterial({
             uniforms,
-            // vertexShader: planeSphereVert,
-            vertexShader: planeSphereAlmostVert,
-            fragmentShader: this.sphere,
+            vertexShader: planeSphereVert,
+            // vertexShader: planeSphereAlmostVert,
+            fragmentShader: this.stripeyIdiot,
             side: THREE.DoubleSide,
           });
 
