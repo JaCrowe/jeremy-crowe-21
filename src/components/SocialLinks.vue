@@ -2,11 +2,16 @@
   <div class="socialContainer">
     <a
       rel="me"
-      v-for="{ alt, link, src } in socialLinks"
+      v-for="{ alt, link, src, classes } in socialLinks"
       :href="link"
       :key="alt"
+      class="socialLink"
     >
-      <img :src="`${publicPath}${src}`" :alt="alt" class="socialIcon" />
+      <img
+        :src="`${publicPath}${src}`"
+        :alt="alt"
+        :class="`socialIcon${classes ?? ''}`"
+      />
     </a>
   </div>
 </template>
@@ -34,6 +39,7 @@ export default defineComponent({
           link: "https://linkedin.com/in/jeremyacrowe/",
           src: "/images/linkedin.svg",
           alt: "Jeremy Crowe's LinkedIn profile",
+          classes: " trimmed",
         },
         {
           link: "https://instagram.com/_crowe_magnon/",
@@ -49,6 +55,7 @@ export default defineComponent({
           link: "https://www.shadertoy.com/user/crowemagnon",
           src: "/images/shadertoy.png",
           alt: "Jeremy Crowe's Shadertoy profile",
+          classes: " trimmed",
         },
         {
           link: "https://jacrowe.solidcommunity.net/profile/card#me",
@@ -82,17 +89,38 @@ export default defineComponent({
   flex-direction: row;
   width: 100%;
   max-width: 500px;
-  justify-content: center;
+  justify-content: flex-start;
 }
-.socialIcon {
-  width: 32px;
-  height: 32px;
-  margin: 4px;
-  padding: 8px;
-  border-radius: 8px;
-  background-image: linear-gradient(
-    rgba(50, 50, 50, 0.5),
-    rgba(150, 150, 150, 0.5)
-  );
+
+$colorOne: rgba(255, 255, 255, 1);
+$colorTwo: rgba(205, 205, 205, 1);
+
+a.socialLink {
+  background-image: linear-gradient(150deg, $colorOne, $colorOne);
+  margin-right: 8px;
+  padding: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 100%;
+
+  .socialIcon {
+    width: 100%;
+    height: 100%;
+    &.trimmed {
+      border-radius: 100%;
+    }
+    // margin-right: 8px;
+    //padding: 4px;
+    // border-radius: 100%;
+    //border-radius: 2px;
+    // box-shadow: 0px 0px 3px black;
+    transition: box-shadow 0.25s, transform 0.25s;
+    // transform: translate(-0px, -0px);
+    &:hover {
+      // transform: translate(-3px, -3px);
+      //box-shadow: -3px -2px 0px white;
+      // background-image: linear-gradient(100deg, $colorOne, $colorTwo);
+    }
+  }
 }
 </style>

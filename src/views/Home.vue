@@ -93,7 +93,7 @@ export default defineComponent({
       init();
     },
     setupPerspectiveScene() {
-      let camera: THREE.Camera,
+      let camera: THREE.PerspectiveCamera,
         scene: THREE.Scene,
         renderer: THREE.WebGLRenderer;
       let geometry: THREE.PlaneBufferGeometry,
@@ -160,12 +160,14 @@ export default defineComponent({
         // makeWaveyThing();
         makeplaneSphere();
 
-        const onWindowResize = () => {
-          renderer.setSize(window.innerWidth, window.innerHeight);
-          renderer.setPixelRatio(window.innerHeight / window.innerWidth);
-        };
+        function onWindowResize() {
+          console.log(`We got ${window.innerHeight}, ${window.innerWidth}`);
+          renderer.setSize(window.innerWidth, window.innerHeight, false);
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+        }
 
-        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer = new THREE.WebGLRenderer({ antialias: true });
 
         onWindowResize();
         window.addEventListener("resize", onWindowResize);
