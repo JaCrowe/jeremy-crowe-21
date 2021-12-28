@@ -1,21 +1,26 @@
 <template>
   <div>
-    <!-- <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view /> -->
+    <!-- 
+    <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </div>
+    <router-view /> 
+    -->
     <Home />
+    <!-- <Footer /> -->
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import Home from "@/views/Home.vue"; // @ is an alias to /src
+import Home from "@/views/Home.vue";
+// import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
   name: "App",
   components: {
     Home,
+    // Footer,
   },
 });
 </script>

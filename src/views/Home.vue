@@ -5,7 +5,7 @@
     <div class="socialLinks">
       <SocialLinks />
     </div>
-    <p>Curious guy</p>
+    <p></p>
   </div>
 </template>
 
@@ -15,10 +15,8 @@ import SocialLinks from "../components/SocialLinks.vue";
 import * as THREE from "three";
 import orthoVert from "../glsl/ortho.vert";
 import planeSphereVert from "../glsl/plane_sphere.vert";
-// import planeSphereAlmostVert from "../glsl/plane_sphere_almost.vert";
 import radialWaveVert from "../glsl/radial_wave.vert";
 import radialWaveFrag from "../glsl/radial_wave.frag";
-// import sphereFrag from "../glsl/sphere.frag";
 import stripeyIdiotFrag from "../glsl/stripey_idiot.frag";
 import threeJSExample from "../glsl/three_js_example.frag";
 
@@ -136,7 +134,7 @@ export default defineComponent({
             velocity: { x: Math.random(), y: Math.random(), z: Math.random() },
           });
         };
-        const makeplaneSphere = () => {
+        const makePlaneSphere = () => {
           const uniforms: MaterialUniform = { time: { value: Math.random() } };
 
           material = new THREE.ShaderMaterial({
@@ -147,7 +145,6 @@ export default defineComponent({
           });
 
           mesh = new THREE.Mesh(geometry, material);
-          // mesh.position.y = 0.03;
 
           scene.add(mesh);
           meshes.push({
@@ -158,7 +155,7 @@ export default defineComponent({
         };
 
         // makeWaveyThing();
-        makeplaneSphere();
+        makePlaneSphere();
 
         function onWindowResize() {
           console.log(`We got ${window.innerHeight}, ${window.innerWidth}`);
@@ -183,7 +180,6 @@ export default defineComponent({
           uniforms.time.value += 0.01;
         });
 
-        // meshes[0].mesh.rotation.z -= 0.0025;
         meshes[0].mesh.rotation.y -= 0.0025;
 
         renderer.render(scene, camera);
