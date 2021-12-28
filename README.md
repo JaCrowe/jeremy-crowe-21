@@ -5,26 +5,9 @@ Jeremy Crowe's personal website. Not too far from the Vue 3 template with the fo
 - The use of ThreeJS
 - Webpack raw loader configured for `.vert` and `.frag` files
 
-## Project setup
+## Running Locally
 
 ```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-
-```
-yarn build
-```
-
-### Lints and fixes files
-
-```
-yarn lint
+npm run install
+npm run serve
 ```
