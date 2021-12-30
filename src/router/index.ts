@@ -6,6 +6,19 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Home",
     component: Home,
+    meta: {
+      title: "Jeremy Crowe",
+      metaTags: [
+        {
+          name: "description",
+          content: "Home page for Jeremy Crowe's personal website",
+        },
+        {
+          name: "og:description",
+          content: "Home page for Jeremy Crowe's personal website",
+        },
+      ],
+    },
   },
   // {
   //   path: "/about",
