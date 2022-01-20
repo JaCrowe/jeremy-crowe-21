@@ -43,7 +43,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     title: "Instagram",
-    link: "https://instagram.com/_crowe_magnon/",
+    link: "https://instagram.com/_proceduraljerome/",
     src: "/images/instagram.svg",
     alt: "Jeremy Crowe's Instagram profile",
   },
